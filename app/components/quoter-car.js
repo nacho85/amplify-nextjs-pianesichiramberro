@@ -236,7 +236,7 @@ const QuoterCar = ({ brands, setResultQuote }) => {
         </p>
         {quotingStatus === "loading" && (
           <div className={styles.loading}>
-            <Image src={imgLoading} />
+            <Image src={imgLoading} alt="Cargando..."/>
             Cotizando tu vehículo...
           </div>
         )}
@@ -318,7 +318,7 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                   <>
                     {loading && (
                       <div className={styles.loading}>
-                        <Image src={imgLoading} />
+                        <Image src={imgLoading}  alt="Cargando..."/>
                         Obteniendo la información...
                       </div>
                     )}
