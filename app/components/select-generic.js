@@ -54,7 +54,7 @@ const SelectGeneric = ({ items, onClose, onItemSelect, textField }) => {
                 key={"item" + ind}
                 className={styles.itemBox}
                 onClick={() => {
-                  onItemSelect(items.filter((it) => it.id === i.id)[0]);
+                  onItemSelect(i);
                 }}
               >
                 {i[textField].toLowerCase()}

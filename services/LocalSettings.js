@@ -98,7 +98,7 @@ export const vehicleWebResultCoverages = [
     items: [
       {
         code: "B",
-        tags: [2, 11],
+        tags: [1, 2, 11],
       },
     ],
   },

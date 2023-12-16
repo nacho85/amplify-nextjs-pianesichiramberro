@@ -2,18 +2,18 @@
 import styles from "./quoter-car.module.css";
 import imgCar from "../../images/car.png";
 import imgHome from "../../images/home.png";
+import imgLoading from "../../images/loading.gif";
 import SelectModal from "./select-modal";
 import Image from "next/image";
 import Link from "next/link";
 import SelectBrand from "./select-brand";
 import SelectGeneric from "./select-generic";
-import { useState, version } from "react";
+import { useState } from "react";
 import { acceptedYears, getVersions } from "@/services/InfoautoService";
 import { Box, Modal, TextField } from "@mui/material";
 import Autocomplete from "./autocomplete";
 import { cities } from "@/services/LocalSettings";
 import { postQuoteWeb } from "@/services/QuoteService";
-import QuoteResult from "./quote-result";
 
 const QuoterCar = ({ brands, setResultQuote }) => {
   const [modalState, setModalState] = useState({
@@ -22,7 +22,6 @@ const QuoterCar = ({ brands, setResultQuote }) => {
     modalYearsOpen: false,
     modalVersionsOpen: false,
     modalDataOpen: false,
-    modalQuoteErrorOpen: false,
   });
   const [models, setModels] = useState([]);
   const [years, setYears] = useState([]);
@@ -36,6 +35,8 @@ const QuoterCar = ({ brands, setResultQuote }) => {
   const [selectedEmail, setSelectedEmail] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [quotingStatus, setQuotingStatus] = useState(null);
+
   const handleBrandSelect = (item) => {
     setSelectedModel(null);
     setModels(
@@ -178,16 +179,17 @@ const QuoterCar = ({ brands, setResultQuote }) => {
         age: 35,
       };
       postQuoteWeb(payload, handleQuoteResponse);
+      setQuotingStatus("loading");
+      setModalState({
+        ...modalState,
+        modalDataOpen: false,
+      });
     }
   };
 
   const handleQuoteResponse = (response) => {
     if (!response || !response.data || response.data.estado === 0) {
-      setModalState({
-        ...modalState,
-        modalDataOpen: false,
-        modalQuoteErrorOpen: true,
-      });
+      setQuotingStatus("error");
       return;
     }
     response.data.datosResultado.orden.vehiculoDescripcion =
@@ -232,113 +234,128 @@ const QuoterCar = ({ brands, setResultQuote }) => {
           En tan sólo unos pasos podrás cotizar tu vehículo y formar parte de
           nuestra comunidad.
         </p>
-        <form className={styles.quoterForm}>
-          <SelectModal
-            modalComponent={
-              <SelectBrand
-                brands={brands}
-                onBrandSelect={handleBrandSelect}
-                textField="name"
-                onClose={closeBrands}
-              />
-            }
-            onClick={() => {
-              setModalState({
-                ...modalState,
-                modalBrandsOpen: true,
-              });
-            }}
-            onClose={closeBrands}
-            open={modalState.modalBrandsOpen}
-            placeholder={"Marca"}
-            textField="name"
-            value={selectedBrand}
-          />
-          <SelectModal
-            disabled={!models.length > 0}
-            modalComponent={
-              <SelectGeneric
-                items={models}
-                onClose={closeModels}
-                onItemSelect={handleModelSelect}
-                textField="name"
-              />
-            }
-            onClick={() => {
-              if (selectedBrand) {
-                setModalState({
-                  ...modalState,
-                  modalModelsOpen: true,
-                });
-              }
-            }}
-            onClose={closeModels}
-            open={modalState.modalModelsOpen}
-            placeholder="Modelo"
-            textField="name"
-            value={selectedModel}
-          />
-          <SelectModal
-            disabled={!years.length > 0}
-            modalComponent={
-              <SelectGeneric
-                items={years}
-                onClose={closeYears}
-                onItemSelect={handleYearSelect}
-                textField="text"
-              />
-            }
-            onClick={() => {
-              if (selectedBrand && selectedModel) {
-                setModalState({
-                  ...modalState,
-                  modalYearsOpen: true,
-                });
-              }
-            }}
-            onClose={closeYears}
-            open={modalState.modalYearsOpen}
-            placeholder="Año"
-            textField="text"
-            value={selectedYear}
-          />
-          <SelectModal
-            disabled={!versions.length > 0}
-            modalComponent={
-              <>
-                {loading && <div>Cargando...</div>}
-                {!loading && (
-                  <SelectGeneric
-                    items={versions}
-                    onClose={closeVersions}
-                    onItemSelect={handleVersionSelect}
-                    textField="label"
+        {quotingStatus === "loading" && (
+          <div className={styles.loading}>
+            <Image src={imgLoading} />
+            Cotizando tu vehículo...
+          </div>
+        )}
+        {!quotingStatus && (
+          <>
+            <form className={styles.quoterForm}>
+              <SelectModal
+                modalComponent={
+                  <SelectBrand
+                    brands={brands}
+                    onBrandSelect={handleBrandSelect}
+                    textField="name"
+                    onClose={closeBrands}
                   />
-                )}
-              </>
-            }
-            onClick={() => {
-              if (selectedBrand && selectedModel && selectedYear) {
-                setModalState({
-                  ...modalState,
-                  modalVersionsOpen: true,
-                });
-              }
-            }}
-            onClose={closeVersions}
-            open={modalState.modalVersionsOpen}
-            placeholder="Versión"
-            textField="label"
-            value={selectedVersion}
-          />
-        </form>
-        <input
-          className={styles.submitButton}
-          disabled={!isFormValid}
-          onClick={onFormSubmit}
-          type="submit"
-          value={"Generar cotización"}
-        />
+                }
+                onClick={() => {
+                  setModalState({
+                    ...modalState,
+                    modalBrandsOpen: true,
+                  });
+                }}
+                onClose={closeBrands}
+                open={modalState.modalBrandsOpen}
+                placeholder={"Marca"}
+                textField="name"
+                value={selectedBrand}
+              />
+              <SelectModal
+                disabled={!models.length > 0}
+                modalComponent={
+                  <SelectGeneric
+                    items={models}
+                    onClose={closeModels}
+                    onItemSelect={handleModelSelect}
+                    textField="name"
+                  />
+                }
+                onClick={() => {
+                  if (selectedBrand) {
+                    setModalState({
+                      ...modalState,
+                      modalModelsOpen: true,
+                    });
+                  }
+                }}
+                onClose={closeModels}
+                open={modalState.modalModelsOpen}
+                placeholder="Modelo"
+                textField="name"
+                value={selectedModel}
+              />
+              <SelectModal
+                disabled={!years.length > 0}
+                modalComponent={
+                  <SelectGeneric
+                    items={years}
+                    onClose={closeYears}
+                    onItemSelect={handleYearSelect}
+                    textField="text"
+                  />
+                }
+                onClick={() => {
+                  if (selectedBrand && selectedModel) {
+                    setModalState({
+                      ...modalState,
+                      modalYearsOpen: true,
+                    });
+                  }
+                }}
+                onClose={closeYears}
+                open={modalState.modalYearsOpen}
+                placeholder="Año"
+                textField="text"
+                value={selectedYear}
+              />
+              <SelectModal
+                disabled={!versions.length > 0}
+                modalComponent={
+                  <>
+                    {loading && (
+                      <div className={styles.loading}>
+                        <Image src={imgLoading} />
+                        Obteniendo la información...
+                      </div>
+                    )}
+                    {!loading && (
+                      <SelectGeneric
+                        items={versions}
+                        onClose={closeVersions}
+                        onItemSelect={handleVersionSelect}
+                        textField="label"
+                      />
+                    )}
+                  </>
+                }
+                onClick={() => {
+                  if (selectedBrand && selectedModel && selectedYear) {
+                    setModalState({
+                      ...modalState,
+                      modalVersionsOpen: true,
+                    });
+                  }
+                }}
+                onClose={closeVersions}
+                open={modalState.modalVersionsOpen}
+                placeholder="Versión"
+                textField="label"
+                value={selectedVersion}
+              />
+            </form>
+            <input
+              className={styles.submitButton}
+              disabled={!isFormValid}
+              onClick={onFormSubmit}
+              type="submit"
+              value={"Generar cotización"}
+            />
+          </>
+        )}
         {
           <Modal
             className={styles.modalDataContainer}

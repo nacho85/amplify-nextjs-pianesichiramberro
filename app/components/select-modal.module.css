@@ -1,6 +1,7 @@
 .select-modal-container {
   border-radius: 12px;
-  max-width: 100%;
+  min-width: 200px;
+
   border: 2px solid rgb(47, 165, 213);
   outline: none;
   background: transparent;
@@ -11,6 +12,10 @@
   height: 40px;
   color: #323f7f;
   cursor: pointer;
+  max-width: 100%;
+  @media (min-width: 768px) {
+    width: 250px;
+  }
 }
 
 .disabled {
