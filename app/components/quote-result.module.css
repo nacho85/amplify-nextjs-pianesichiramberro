@@ -59,6 +59,19 @@
   }
 }
 
+.com-label{
+  color: #23366f;
+  font-size: 1rem;
+  width: 100%;
+  padding: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  @media (max-width: 576px) {
+    font-size: 0.9rem;
+  }
+}
+
 .info-label {
   color: #323f7f;
   font-size: 0.7rem;
@@ -244,7 +257,6 @@
 
 .whatsapp-link {
   max-width: 250px;
-  font-family: "Gotham Narrow", sans-serif;
   font-size: 0.8rem;
   text-decoration: none;
   color: #323f7f;
@@ -254,7 +266,6 @@
   background-color: #fff;
   border: 1px solid #29b200;
   border-radius: 12px;
-
   margin: 0 auto;
   position: relative;
   display: table;

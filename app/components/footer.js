@@ -1,12 +1,21 @@
 import styles from "./footer.module.css";
 import Link from "next/link";
 import logoAfip from "../../images/afip-sello.jpg";
+import logoSsn from "../../images/ssn.png";
+import logoIg from "../../images/ig.png";
+
 import Image from "next/image";
 
 const Footer = () => {
   return (
     <div className={styles.footer}>
       <div className={styles.firstSection}>
+        <Link
+            href='http://www.ssn.gob.ar/'
+            target='_blank'
+            rel="noreferrer">
+          <Image className={styles.logoSsn} border="0" src={logoSsn} alt='Superintendencia de Seguros de la Nación'/>
+        </Link>
         <div className={styles.logoAfipContainer}>
           <Link
             href="http://qr.afip.gob.ar/?qr=Fql_9B62NyuJZVonsfkiQQ,,"
@@ -21,6 +30,11 @@ const Footer = () => {
             />
           </Link>
         </div>
+        <Link href={'//www.instagram.com/pianesichiramberro/?hl=es-la'}
+          target='_blank'
+          rel="noreferrer">
+          <Image className={styles.logoIg} border="0" src={logoIg} alt='Instagram'/>
+        </Link>
         <div className={styles.footerRight}>
           <p>
             <b>Pianesi & Chiramberro Asesores de Seguros</b>

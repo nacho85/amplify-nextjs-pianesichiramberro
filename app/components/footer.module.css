@@ -17,6 +17,8 @@
   width: 80%;
   @media (max-width: 576px) {
     width: 95%;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -33,8 +35,8 @@
 
 .footer-right {
   font-size: 0.8rem;
-  @media (max-width: 576px) {
-    font-size: 0.7rem;
+  @media (max-width: 992px) {
+    display: none;
   }
 }
 
@@ -42,7 +44,25 @@
   max-height: 100px;
 }
 
+.logo-ssn{
+  width: 320px;
+  height: 60px;
+  margin-top: 15px;
+}
+
 .logo-afip {
   height: 100px;
   width: 70px;
+  @media (max-width: 576px) {
+    margin-top: 10px;
+  }
+}
+
+.logo-ig{
+  height: 60px;
+  width: 60px;
+  margin-top: 15px;
+  @media (max-width: 576px) {
+    margin-top: 20px;
+  }
 }

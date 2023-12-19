@@ -106,6 +106,7 @@ const QuoteResult = ({ data }) => {
           </b>
         </div>
       </div>
+      <p className={styles.comLabel}><b>En breve, un asesor va a comunicarse para asesorarte.</b></p>
       <p className={styles.infoLabel}>
         Los siniestros de pérdida total, robo o hurto del vehículo, se pagan a
         valor de reposición actualizado.
