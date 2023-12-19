@@ -306,7 +306,7 @@ const QuoteResult = ({ data }) => {
       <div className={styles.wp}>
         <Link
           href={
-            "//wa.me/5492284662477?text=Hola!%20Quiero%20conocer%20m%C3%A1s%20acerca%20del%20seguro%20para%20mi%20auto."
+            "//wa.me/5492284680187?text=Hola!%20Quiero%20conocer%20m%C3%A1s%20acerca%20del%20seguro%20para%20mi%20auto."
           }
           className={styles.whatsappLink}
           target="_blank"
