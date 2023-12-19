@@ -211,6 +211,8 @@
   margin-top: 25px;
   width: 100%;
   padding: 2rem 1.5rem 3rem 1.5rem;
+  color: #323f7f;
+  font-weight: 300;
   @media (min-width: 360px) {
     max-width: 340px;
   }

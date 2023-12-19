@@ -168,7 +168,7 @@
   backdrop-filter: blur(8px);
   color: #323f7f;
   border: 1px solid #323f7f;
-  margin-left: 0px;
+  margin-left: 0px !important;
   @media (max-width: 768px) {
     margin-bottom: 20px;
   }
