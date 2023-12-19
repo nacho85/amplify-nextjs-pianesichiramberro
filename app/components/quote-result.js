@@ -114,7 +114,7 @@ const QuoteResult = ({ data }) => {
         <b>Beneficio 0km:</b> Reposición del vehículo a valor de un 0km por 2
         años.
       </p>
-      <p className={styles.infoLabelCell}>
+      <p className={styles.infoCell}>
         Deslizá sobre las coberturas para comparar precios y alcance de cada
         una.
       </p>

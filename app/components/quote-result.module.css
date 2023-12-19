@@ -72,14 +72,14 @@
   }
 }
 
-.info-label-cell {
+.info-cell {
   color: #323f7f;
   font-size: 0.7rem;
   padding: 0px;
   margin-bottom: 0px;
   text-align: center;
-  @media (min-width: 768px) {
-    display: none;
+  @media (max-width: 768px) {
+    display: block;
   }
 }
 
