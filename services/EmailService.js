@@ -37,6 +37,7 @@ export const sendMailCotizacionResultado = (datosCotizacion, callback) =>
             </div>
             `
             .replace("{nombre}", datosCotizacion.name)
+            .replace("{city}", datosCotizacion.city)
             .replace("{email}", datosCotizacion.email)
             .replace("{vehicle}", datosCotizacion.vehicle)
             .replace("{0km}", datosCotizacion.is0km? "SI" : "NO")
