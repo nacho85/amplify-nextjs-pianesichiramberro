@@ -12,125 +12,16 @@ import Link from "next/link";
 import Carousel from "react-material-ui-carousel";
 
 const QuoteResult = ({ data }) => {
-  const [estadoActual, setEstadoActual] = useState(null);
   const [selectedTag, setSelectedTag] = useState(0);
-  const [formValido, setFormValido] = useState(false);
-  const [modalIsOpen, setIsOpen] = React.useState(false);
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0);
-  const [formResultado, setFormResultado] = useState({
-    nombre: "",
-    email: "",
-    validaciones: {},
-  });
 
   function closeModal() {
-    setIsOpen(false);
+    setSelectedTag(0);
   }
 
-  useEffect(() => {
-    checkFormValido();
-    // eslint-disable-next-line
-  }, [formResultado]);
-
-  useEffect(() => {
-    if (selectedTag > 0) setIsOpen(true);
-  }, [selectedTag]);
-
-  function checkFormValido() {
-    setFormValido(
-      formResultado.nombre &&
-        !formResultado.validaciones.nombre &&
-        formResultado.email &&
-        !formResultado.validaciones.email
-    );
-  }
-
-  const handleTagInfoClick = (event) => {
-    var tagId = event.target.getAttribute("data-tag-id");
-    setSelectedTag(tagId);
+  const handleTagInfoClick = (id) => {
+    setSelectedTag(id);
   };
-
-  function handleNombreChange(event) {
-    var mensaje = null;
-    if (!event.target.value) mensaje = "Nombre es obligatorio";
-
-    setFormResultado((prevForm) => ({
-      ...prevForm,
-      nombre: event.target.value,
-      validaciones: {
-        ...prevForm.validaciones,
-        nombre: mensaje,
-      },
-    }));
-  }
-
-  function handleEmailChange(event) {
-    var mensaje = null;
-    if (!event.target.value) mensaje = "Email/Teléfono es obligatorio";
-    else {
-      var numRe = /^\d+\.?\d*$/;
-
-      if (numRe.test(event.target.value)) {
-        if (event.target.value.length > 15) return;
-        if (event.target.value.length < 7) mensaje = "Email/Teléfono inválido";
-      } else {
-        var re = /\S+@\S+\.\S+/;
-        if (!re.test(event.target.value)) mensaje = "Email/Teléfono inválido";
-      }
-    }
-
-    setFormResultado((prevForm) => ({
-      ...prevForm,
-      email: event.target.value,
-      validaciones: {
-        ...prevForm.validaciones,
-        email: mensaje,
-      },
-    }));
-  }
-
-  function onFormSubmit(event) {
-    event.preventDefault();
-    var packages = [];
-    vehicleWebResultCoverages.forEach((cov) => {
-      for (let index = 0; index < cov.items.length; index++) {
-        const item = cov.items[index];
-        var coverageInfo = data.desglose.find(
-          (c) => c.descripcion === item.code
-        );
-        if (coverageInfo) {
-          packages.push({
-            name: coverageInfo.descripcionLarga,
-            price: new Intl.NumberFormat("es-AR", {
-              style: "currency",
-              currency: "USD",
-              currencyDisplay: "narrowSymbol",
-            }).format(coverageInfo.premio),
-          });
-          break;
-        }
-      }
-    });
-
-    var payload = {
-      name: formResultado.nombre,
-      email: formResultado.email,
-      vehicle: data.vehiculoDescripcion + " " + data.items[0].anio,
-      hasGas: data.hasGas,
-      is0km: data.is0km,
-      price:
-        "$" +
-        new Intl.NumberFormat("es-AR").format(data.items[0].valorVehiculo),
-      age: data.age,
-      packages: packages,
-    };
-    //sendMailCotizacionResultado(payload, handleEmailResponse)
-    setEstadoActual("enviando");
-  }
-
-  function handleEmailResponse(result) {
-    setEstadoActual(result.isError ? "error" : "ok");
-  }
 
   let carouselElements = [];
   vehicleWebResultCoverages.forEach((cov) => {
@@ -156,22 +47,26 @@ const QuoteResult = ({ data }) => {
   return (
     <div className={styles.quoteResultContainer}>
       <Modal
-        open={modalIsOpen}
+        className={styles.modalContainer}
         onClose={closeModal}
-        contentLabel="Example Modal"
-        ariaHideApp={false}
-        className="cotizacion-resultado-modal"
+        open={selectedTag > 0}
       >
-        <Box>
+        <Box className={styles.modalBox}>
+          <button
+            className={styles.btnClose}
+            onClick={closeModal}
+            type="button"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <br />
           <h2>
             {selectedTag > 0 &&
               vehicleWebResultCoverageTags.find(
                 (t) => t.id === parseInt(selectedTag)
               ).title}
           </h2>
-          <button onClick={closeModal} className="modal-close">
-            X
-          </button>
+          <br />
           <div>
             {selectedTag > 0 && (
               <p>
@@ -231,7 +126,7 @@ const QuoteResult = ({ data }) => {
                   swipe={true}
                   cycleNavigation={false}
                   interval={500}
-                  duration={1000}
+                  duration={500}
                   animation="slide"
                   navButtonsAlwaysVisible={false}
                   navButtonsAlwaysInvisibleisible={true}
@@ -259,7 +154,13 @@ const QuoteResult = ({ data }) => {
                       selectedCarouselIndex
                     ].tags.find((t) => t === tag.id);
                     return (
-                      <div key={tagIndex} className={styles.infoCell}>
+                      <div
+                        key={tagIndex}
+                        className={styles.infoCell}
+                        onClick={() => {
+                          handleTagInfoClick(tag.id);
+                        }}
+                      >
                         <label className={styles.tagTitle}>{tag.title}</label>
                         {tagFound ? (
                           <svg
@@ -307,7 +208,16 @@ const QuoteResult = ({ data }) => {
                   return (
                     <div key={tagIndex} className={styles.infoCell}>
                       <label className={styles.tagTitle}>{tag.title}</label>
-                      {<Image src={imgInfo} className={styles.tagInfo} />}
+                      {
+                        <Image
+                          src={imgInfo}
+                          className={styles.tagInfo}
+                          alt="Ver información"
+                          onClick={() => {
+                            handleTagInfoClick(tag.id);
+                          }}
+                        />
+                      }
                     </div>
                   );
                 })}

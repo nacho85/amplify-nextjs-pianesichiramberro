@@ -3,7 +3,7 @@ import { TextField } from "@mui/material";
 import styles from "./select-generic.module.css";
 import { useState } from "react";
 
-const SelectGeneric = ({ items, onClose, onItemSelect, textField }) => {
+const SelectGeneric = ({ items, onItemSelect, textField }) => {
   const [input, setInput] = useState("");
   const [filtered, setFiltered] = useState(items);
   const onChange = (e) => {
@@ -31,9 +31,6 @@ const SelectGeneric = ({ items, onClose, onItemSelect, textField }) => {
 
   return (
     <div className={styles.selectGenericContainer}>
-      <button className={styles.btnClose} onClick={onClose} type="button">
-        <span aria-hidden="true">×</span>
-      </button>
       <TextField
         label="Buscar"
         className={styles.inputSearch}

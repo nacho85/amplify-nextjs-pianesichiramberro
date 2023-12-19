@@ -47,7 +47,12 @@ const SelectModal = ({
         onClose={onClose}
         open={open}
       >
-        <Box className={styles.modalBox}>{modalComponent}</Box>
+        <Box className={styles.modalBox}>
+          <button className={styles.btnClose} onClick={onClose} type="button">
+            <span aria-hidden="true">×</span>
+          </button>
+          {modalComponent}
+        </Box>
       </Modal>
     </>
   );

@@ -13,7 +13,7 @@ import Image from "next/image";
 import { TextField } from "@mui/material";
 import { use, useState } from "react";
 
-const SelectBrand = ({ brands, textField, onBrandSelect, onClose }) => {
+const SelectBrand = ({ brands, textField, onBrandSelect }) => {
   const popularBrandsArray = [46, 36, 12, 17, 45, 11, 18, 32, 19];
   const [input, setInput] = useState("");
   const [filtered, setFiltered] = useState(brands);
@@ -42,9 +42,6 @@ const SelectBrand = ({ brands, textField, onBrandSelect, onClose }) => {
 
   return (
     <div className={styles.selectBrandContainer}>
-      <button className={styles.btnClose} onClick={onClose} type="button">
-        <span aria-hidden="true">×</span>
-      </button>
       <TextField
         className={styles.inputSearch}
         label="Buscar"

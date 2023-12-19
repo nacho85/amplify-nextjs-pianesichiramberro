@@ -1,16 +1,5 @@
 .select-generic-container {
-  height: 100%;
-}
-
-.btn-close {
-  position: relative;
-  float: right;
-  border: none;
-  font-size: 29px;
-  color: #3f4a81;
-  margin-bottom: -25px;
-  z-index: 2 !important;
-  cursor: pointer;
+  height: 90%;
 }
 
 .input-search {

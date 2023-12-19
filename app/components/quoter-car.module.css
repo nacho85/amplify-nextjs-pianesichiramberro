@@ -157,6 +157,23 @@
   color: #3f4a81b3;
 }
 
+.gas-box {
+  width: fit-content;
+  max-height: 55px;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(234, 242, 252, 0.9607843137);
+  border: 1px solid rgba(255, 255, 255, 0.5411764706);
+  -webkit-backdrop-filter: blur(8px) brightness(4);
+  backdrop-filter: blur(8px);
+  color: #323f7f;
+  border: 1px solid #323f7f;
+  margin-left: 0px;
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
+}
+
 .form-data-city-results {
   position: absolute;
   background-color: #fff;
@@ -176,6 +193,11 @@
   @media (min-width: 576px) {
     display: inherit;
   }
+}
+
+.form-control-label :global .MuiTypography-root {
+  color: #3f4a81b3;
+  font-size: 0.9rem;
 }
 
 .name-container {

@@ -8,7 +8,9 @@ export const policyTypes = data.policyTypes;
 export const paymentMethods = data.paymentMethods;
 export const vatConditionPersonTypes = data.vatConditionPersonTypes;
 
-export const cities = [];
+export const acceptedYears = new Date().getFullYear() - 10; //vehicles upto 10 years back from now
+
+export let cities = [];
 for (let index = 0; index < data.cities.length; index++) {
   const city = data.cities[index];
   cities.push({
@@ -26,8 +28,8 @@ for (let index = 0; index < data.cities.length; index++) {
   });
 }
 
-export const societies = [];
-export const organizations = [];
+export let societies = [];
+export let organizations = [];
 for (let index = 0; index < data.societyPlans.length; index++) {
   const societyPlan = data.societyPlans[index];
   if (societyPlan.plan.idPlan === 971) {
@@ -50,10 +52,19 @@ for (let index = 0; index < data.societyPlans.length; index++) {
       });
   }
 }
-export const sex = [
-  { label: "Masculino", value: "M" },
+
+export const sexItems = [
   { label: "Femenino", value: "F" },
+  { label: "Masculino", value: "M" },
 ];
+
+export let ageItems = [];
+for (let index = 20; index <= 89; index++) {
+  ageItems.push({
+    label: index.toString(),
+    value: index
+  });
+}
 
 export const civilStatuses = [
   { label: "Soltero/a", value: 1 },

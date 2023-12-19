@@ -10,10 +10,26 @@ import SelectBrand from "./select-brand";
 import SelectGeneric from "./select-generic";
 import { useState } from "react";
 import { acceptedYears, getVersions } from "@/services/InfoautoService";
-import { Box, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+} from "@mui/material";
 import Autocomplete from "./autocomplete";
-import { cities } from "@/services/LocalSettings";
+import {
+  cities,
+  ageItems,
+  sexItems,
+  vehicleWebResultCoverages,
+} from "@/services/LocalSettings";
 import { postQuoteWeb } from "@/services/QuoteService";
+import { sendMailCotizacionResultado } from "@/services/EmailService";
 
 const QuoterCar = ({ brands, setResultQuote }) => {
   const [modalState, setModalState] = useState({
@@ -28,14 +44,18 @@ const QuoterCar = ({ brands, setResultQuote }) => {
   const [versions, setVersions] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedModel, setSelectedModel] = useState(null);
+  const [hasGas, setHasGas] = useState(false);
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [selectedFirstName, setSelectedFirstName] = useState("");
   const [selectedLastName, setSelectedLastName] = useState("");
-  const [selectedEmail, setSelectedEmail] = useState("");
+  const [selectedAge, setSelectedAge] = useState(20);
+  const [selectedSex, setSelectedSex] = useState("F");
+  const [selectedPhone, setSelectedPhone] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(false);
   const [quotingStatus, setQuotingStatus] = useState(null);
+  const [contact, setContact] = useState(true);
 
   const handleBrandSelect = (item) => {
     setSelectedModel(null);
@@ -69,7 +89,14 @@ const QuoterCar = ({ brands, setResultQuote }) => {
     let init =
       item?.prices_from > acceptedYears ? item.prices_from : acceptedYears;
     let validYears = [];
-    for (let index = init + 1; index <= new Date().getFullYear(); index++) {
+    for (let index = new Date().getFullYear(); index > init; index--) {
+      if (index === new Date().getFullYear()) {
+        validYears.push({
+          value: index,
+          text: index.toString() + " (0km)",
+          is0km: true,
+        });
+      }
       validYears.push({ value: index, text: index.toString() });
     }
     setYears(item ? validYears : []);
@@ -118,10 +145,14 @@ const QuoterCar = ({ brands, setResultQuote }) => {
     selectedBrand && selectedModel && selectedYear && selectedVersion;
 
   const isFormDataValid =
-    selectedFirstName?.length > 1 &&
-    selectedLastName?.length > 1 &&
-    /\S+@\S+\.\S+/.test(selectedEmail) &&
-    selectedCity;
+    selectedAge &&
+    selectedSex &&
+    selectedCity &&
+    (!contact ||
+      (contact &&
+        selectedFirstName?.length > 1 &&
+        selectedLastName?.length > 1 &&
+        /^\d{10}$/.test(selectedPhone)));
 
   const onFormSubmit = () => {
     if (isFormValid) {
@@ -134,6 +165,14 @@ const QuoterCar = ({ brands, setResultQuote }) => {
 
   const handleCitySelect = (item) => {
     setSelectedCity(item);
+  };
+
+  const handleAgeSelect = (e) => {
+    setSelectedAge(e.target.value);
+  };
+
+  const handleSexSelect = (e) => {
+    setSelectedSex(e.target.value);
   };
 
   const closeBrands = () => {
@@ -170,13 +209,13 @@ const QuoterCar = ({ brands, setResultQuote }) => {
       let payload = {
         vehicleCode: selectedVersion.value,
         vehicleYear: selectedYear.value,
-        is0km: false,
-        hasGas: false,
+        is0km: selectedYear.is0km,
+        hasGas: hasGas,
         idCity: selectedCity.value,
         idProvince: selectedCity.idProvince,
         zipCode: selectedCity.zipCode,
-        idSex: "M",
-        age: 35,
+        idSex: selectedSex,
+        age: selectedAge,
       };
       postQuoteWeb(payload, handleQuoteResponse);
       setQuotingStatus("loading");
@@ -185,6 +224,30 @@ const QuoterCar = ({ brands, setResultQuote }) => {
         modalDataOpen: false,
       });
     }
+  };
+
+  const getPackages = (orden) => {
+    var packages = [];
+    vehicleWebResultCoverages.forEach((cov) => {
+      for (let index = 0; index < cov.items.length; index++) {
+        const item = cov.items[index];
+        var coverageInfo = orden.desglose.find(
+          (c) => c.descripcion === item.code
+        );
+        if (coverageInfo) {
+          packages.push({
+            name: coverageInfo.descripcionLarga,
+            price: new Intl.NumberFormat("es-AR", {
+              style: "currency",
+              currency: "USD",
+              currencyDisplay: "narrowSymbol",
+            }).format(coverageInfo.premio),
+          });
+          break;
+        }
+      }
+    });
+    return packages;
   };
 
   const handleQuoteResponse = (response) => {
@@ -199,8 +262,32 @@ const QuoterCar = ({ brands, setResultQuote }) => {
       " " +
       selectedVersion.label;
     response.data.datosResultado.orden.age = selectedYear.text;
-    response.data.datosResultado.orden.hasGas = false;
-    response.data.datosResultado.orden.is0km = false;
+    response.data.datosResultado.orden.hasGas = hasGas;
+    response.data.datosResultado.orden.is0km = selectedYear.is0km;
+    if (contact) {
+      const mailPayload = {
+        name: selectedFirstName,
+        email: selectedLastName,
+        vehicle:
+          selectedBrand.name +
+          " " +
+          selectedModel.name +
+          " " +
+          selectedVersion.label +
+          " " +
+          selectedYear.value,
+        hasGas: hasGas,
+        is0km: selectedYear.is0km,
+        price:
+          "$" +
+          new Intl.NumberFormat("es-AR").format(
+            response.data.datosResultado.orden.items[0].valorVehiculo
+          ),
+        age: selectedAge,
+        packages: getPackages(response.data.datosResultado.orden),
+      };
+      sendMailCotizacionResultado(mailPayload, () => {});
+    }
     setResultQuote(response.data.datosResultado.orden);
   };
 
@@ -234,9 +321,21 @@ const QuoterCar = ({ brands, setResultQuote }) => {
           En tan sólo unos pasos podrás cotizar tu vehículo y formar parte de
           nuestra comunidad.
         </p>
+        {quotingStatus === "error" && (
+          <div className={styles.loading}>
+            <b>Hubo un problema al procesar la cotización.</b>
+            <br />
+            <div>
+              <i>
+                Por favor, intente nuevamente, o comuniquese directamente con
+                nosotros. Muchas gracias.
+              </i>
+            </div>
+          </div>
+        )}
         {quotingStatus === "loading" && (
           <div className={styles.loading}>
-            <Image src={imgLoading} alt="Cargando..."/>
+            <Image src={imgLoading} alt="Cargando..." />
             Cotizando tu vehículo...
           </div>
         )}
@@ -249,7 +348,6 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                     brands={brands}
                     onBrandSelect={handleBrandSelect}
                     textField="name"
-                    onClose={closeBrands}
                   />
                 }
                 onClick={() => {
@@ -269,7 +367,6 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                 modalComponent={
                   <SelectGeneric
                     items={models}
-                    onClose={closeModels}
                     onItemSelect={handleModelSelect}
                     textField="name"
                   />
@@ -293,7 +390,6 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                 modalComponent={
                   <SelectGeneric
                     items={years}
-                    onClose={closeYears}
                     onItemSelect={handleYearSelect}
                     textField="text"
                   />
@@ -318,17 +414,30 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                   <>
                     {loading && (
                       <div className={styles.loading}>
-                        <Image src={imgLoading}  alt="Cargando..."/>
+                        <Image src={imgLoading} alt="Cargando..." />
                         Obteniendo la información...
                       </div>
                     )}
                     {!loading && (
-                      <SelectGeneric
-                        items={versions}
-                        onClose={closeVersions}
-                        onItemSelect={handleVersionSelect}
-                        textField="label"
-                      />
+                      <>
+                        <FormControlLabel
+                          className={styles.gasBox}
+                          control={
+                            <Checkbox
+                              onChange={() => {
+                                setHasGas(!hasGas);
+                              }}
+                              checked={hasGas}
+                            />
+                          }
+                          label="Mi vehículo tiene GNC"
+                        />
+                        <SelectGeneric
+                          items={versions}
+                          onItemSelect={handleVersionSelect}
+                          textField="label"
+                        />
+                      </>
                     )}
                   </>
                 }
@@ -368,36 +477,48 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                 </h4>
                 <form className={styles.formData}>
                   <div className={styles.nameContainer}>
-                    <TextField
+                    <FormControl
                       className={styles.formDataInput}
-                      label="Nombre"
-                      onChange={(e) => {
-                        setSelectedFirstName(e.target.value);
-                      }}
-                      value={selectedFirstName}
                       variant="standard"
-                    />
+                    >
+                      <InputLabel id="select-age-label">Edad</InputLabel>
+                      <Select
+                        labelId="select-age-label"
+                        value={selectedAge}
+                        onChange={handleAgeSelect}
+                        label="Sexo"
+                      >
+                        {ageItems.map((i, ix) => {
+                          return (
+                            <MenuItem key={ix} value={i.value}>
+                              {i.label}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
                     <div className={styles.spaceBetween}>&nbsp;&nbsp;</div>
-                    <TextField
+                    <FormControl
                       className={styles.formDataInput}
-                      label="Apellido"
-                      onChange={(e) => {
-                        setSelectedLastName(e.target.value);
-                      }}
-                      value={selectedLastName}
                       variant="standard"
-                    />
+                    >
+                      <InputLabel id="select-sex-label">Sexo</InputLabel>
+                      <Select
+                        labelId="select-sex-label"
+                        value={selectedSex}
+                        onChange={handleSexSelect}
+                        label="Sexo"
+                      >
+                        {sexItems.map((i, ix) => {
+                          return (
+                            <MenuItem key={ix} value={i.value}>
+                              {i.label}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
                   </div>
-                  <TextField
-                    className={styles.formDataInput}
-                    label="Email"
-                    type="email"
-                    onChange={(e) => {
-                      setSelectedEmail(e.target.value);
-                    }}
-                    value={selectedEmail}
-                    variant="standard"
-                  />
                   <Autocomplete
                     className={styles.formDataInput}
                     items={cities}
@@ -413,6 +534,60 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                   <label className={styles.note}>
                     * La localidad en la cual circula con frecuencia el vehículo
                   </label>
+                  <FormControlLabel
+                    className={styles.formControlLabel}
+                    control={
+                      <Checkbox
+                        onChange={() => {
+                          setContact(!contact);
+                        }}
+                        checked={contact}
+                      />
+                    }
+                    label="Quisiera que me contacten"
+                  />
+                  {contact && (
+                    <>
+                      <div className={styles.nameContainer}>
+                        <TextField
+                          className={styles.formDataInput}
+                          label="Nombre"
+                          onChange={(e) => {
+                            setSelectedFirstName(e.target.value);
+                          }}
+                          value={selectedFirstName}
+                          variant="standard"
+                        />
+                        <div className={styles.spaceBetween}>&nbsp;&nbsp;</div>
+                        <TextField
+                          className={styles.formDataInput}
+                          label="Apellido"
+                          onChange={(e) => {
+                            setSelectedLastName(e.target.value);
+                          }}
+                          value={selectedLastName}
+                          variant="standard"
+                        />
+                      </div>
+                      <TextField
+                        className={styles.formDataInput}
+                        label="Tel./Celular"
+                        type="number"
+                        onChange={(e) => {
+                          if (e.target.value?.length <= 10) {
+                            setSelectedPhone(e.target.value);
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "e") {
+                            e.preventDefault();
+                          }
+                        }}
+                        value={selectedPhone}
+                        variant="standard"
+                      />
+                    </>
+                  )}
                   <input
                     className={styles.submitButton}
                     disabled={!isFormDataValid}
