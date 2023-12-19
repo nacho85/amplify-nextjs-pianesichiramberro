@@ -39,7 +39,7 @@ export const sendMailCotizacionResultado = (datosCotizacion, callback) =>
             .replace("{nombre}", datosCotizacion.name)
             .replace("{city}", datosCotizacion.city)
             .replace("{email}", datosCotizacion.email)
-            .replace("{vehicle}", datosCotizacion.vehicle)
+            .replace("{vehicle}", datosCotizacion.vehicle.toUpperCase())
             .replace("{0km}", datosCotizacion.is0km? "SI" : "NO")
             .replace("{gas}", datosCotizacion.hasGas? "SI" : "NO")
             .replace("{price}", datosCotizacion.price)
