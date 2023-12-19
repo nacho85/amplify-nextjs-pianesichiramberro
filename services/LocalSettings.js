@@ -114,6 +114,19 @@ export const vehicleWebResultCoverages = [
     ],
   },
   {
+    group: "C",
+    items: [
+      {
+        code: "CG",
+        tags: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],
+      },
+      {
+        code: "CM",
+        tags: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],
+      },
+    ],
+  },
+  {
     group: "D",
     items: [
       {
@@ -131,19 +144,6 @@ export const vehicleWebResultCoverages = [
       {
         code: "D6",
         tags: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
-      },
-    ],
-  },
-  {
-    group: "C",
-    items: [
-      {
-        code: "CG",
-        tags: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],
-      },
-      {
-        code: "CM",
-        tags: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],
       },
     ],
   },
