@@ -137,3 +137,25 @@
   filter: blur(85px);
   transform: translateZ(0);
 }
+
+.img-wp-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  @media (min-width: 640px) {
+    width: 60px;
+    height: 60px;
+    top: 20px;
+    right: 10%;
+  }
+}
+
+.img-wp {
+  width: 50px;
+  height: 50px;
+  @media (min-width: 640px) {
+    width: 70px;
+    height: 70px;
+  }
+}

@@ -48,14 +48,12 @@ const QuoterCar = ({ brands, setResultQuote }) => {
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [selectedFirstName, setSelectedFirstName] = useState("");
-  const [selectedLastName, setSelectedLastName] = useState("");
-  const [selectedAge, setSelectedAge] = useState(20);
-  const [selectedSex, setSelectedSex] = useState("F");
+  const [selectedAge, setSelectedAge] = useState(35);
+  const [selectedSex, setSelectedSex] = useState("M");
   const [selectedPhone, setSelectedPhone] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(false);
   const [quotingStatus, setQuotingStatus] = useState(null);
-  const [contact, setContact] = useState(true);
 
   const handleBrandSelect = (item) => {
     setSelectedModel(null);
@@ -148,11 +146,8 @@ const QuoterCar = ({ brands, setResultQuote }) => {
     selectedAge &&
     selectedSex &&
     selectedCity &&
-    (!contact ||
-      (contact &&
-        selectedFirstName?.length > 1 &&
-        selectedLastName?.length > 1 &&
-        /^\d{10}$/.test(selectedPhone)));
+    selectedFirstName?.length > 1 &&
+    /^\d{10}$/.test(selectedPhone);
 
   const onFormSubmit = () => {
     if (isFormValid) {
@@ -264,30 +259,30 @@ const QuoterCar = ({ brands, setResultQuote }) => {
     response.data.datosResultado.orden.age = selectedYear.text;
     response.data.datosResultado.orden.hasGas = hasGas;
     response.data.datosResultado.orden.is0km = selectedYear.is0km;
-    if (contact) {
-      const mailPayload = {
-        name: selectedFirstName,
-        email: selectedLastName,
-        vehicle:
-          selectedBrand.name +
-          " " +
-          selectedModel.name +
-          " " +
-          selectedVersion.label +
-          " " +
-          selectedYear.value,
-        hasGas: hasGas,
-        is0km: selectedYear.is0km,
-        price:
-          "$" +
-          new Intl.NumberFormat("es-AR").format(
-            response.data.datosResultado.orden.items[0].valorVehiculo
-          ),
-        age: selectedAge,
-        packages: getPackages(response.data.datosResultado.orden),
-      };
-      sendMailCotizacionResultado(mailPayload, () => {});
-    }
+
+    const mailPayload = {
+      name: selectedFirstName,
+      email: selectedPhone,
+      city: selectedCity.label,
+      vehicle:
+        selectedBrand.name +
+        " " +
+        selectedModel.name +
+        " " +
+        selectedVersion.label +
+        " " +
+        selectedYear.value,
+      hasGas: hasGas,
+      is0km: selectedYear.is0km,
+      price:
+        "$" +
+        new Intl.NumberFormat("es-AR").format(
+          response.data.datosResultado.orden.items[0].valorVehiculo
+        ),
+      age: selectedAge,
+      packages: getPackages(response.data.datosResultado.orden),
+    };
+    sendMailCotizacionResultado(mailPayload, () => {});
     setResultQuote(response.data.datosResultado.orden);
   };
 
@@ -476,6 +471,32 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                   Necesitamos unos datos más...
                 </h4>
                 <form className={styles.formData}>
+                  <TextField
+                    className={styles.formDataInput}
+                    label="Nombre"
+                    onChange={(e) => {
+                      setSelectedFirstName(e.target.value);
+                    }}
+                    value={selectedFirstName}
+                    variant="standard"
+                  />
+                  <TextField
+                    className={styles.formDataInput}
+                    label="Tel./Celular"
+                    type="number"
+                    onChange={(e) => {
+                      if (e.target.value?.length <= 10) {
+                        setSelectedPhone(e.target.value);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "e") {
+                        e.preventDefault();
+                      }
+                    }}
+                    value={selectedPhone}
+                    variant="standard"
+                  />
                   <div className={styles.nameContainer}>
                     <FormControl
                       className={styles.formDataInput}
@@ -534,60 +555,6 @@ const QuoterCar = ({ brands, setResultQuote }) => {
                   <label className={styles.note}>
                     * La localidad en la cual circula con frecuencia el vehículo
                   </label>
-                  <FormControlLabel
-                    className={styles.formControlLabel}
-                    control={
-                      <Checkbox
-                        onChange={() => {
-                          setContact(!contact);
-                        }}
-                        checked={contact}
-                      />
-                    }
-                    label="Quisiera que me contacten"
-                  />
-                  {contact && (
-                    <>
-                      <div className={styles.nameContainer}>
-                        <TextField
-                          className={styles.formDataInput}
-                          label="Nombre"
-                          onChange={(e) => {
-                            setSelectedFirstName(e.target.value);
-                          }}
-                          value={selectedFirstName}
-                          variant="standard"
-                        />
-                        <div className={styles.spaceBetween}>&nbsp;&nbsp;</div>
-                        <TextField
-                          className={styles.formDataInput}
-                          label="Apellido"
-                          onChange={(e) => {
-                            setSelectedLastName(e.target.value);
-                          }}
-                          value={selectedLastName}
-                          variant="standard"
-                        />
-                      </div>
-                      <TextField
-                        className={styles.formDataInput}
-                        label="Tel./Celular"
-                        type="number"
-                        onChange={(e) => {
-                          if (e.target.value?.length <= 10) {
-                            setSelectedPhone(e.target.value);
-                          }
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "e") {
-                            e.preventDefault();
-                          }
-                        }}
-                        value={selectedPhone}
-                        variant="standard"
-                      />
-                    </>
-                  )}
                   <input
                     className={styles.submitButton}
                     disabled={!isFormDataValid}

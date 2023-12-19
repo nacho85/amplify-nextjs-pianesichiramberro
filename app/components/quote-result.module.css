@@ -241,3 +241,52 @@
   cursor: pointer;
   background-color: transparent;
 }
+
+.whatsapp-link {
+  max-width: 250px;
+  font-family: "Gotham Narrow", sans-serif;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #323f7f;
+}
+
+.whatsapp-box {
+  background-color: #fff;
+  border: 1px solid #29b200;
+  border-radius: 12px;
+
+  margin: 0 auto;
+  position: relative;
+  display: table;
+  margin-top: 15px;
+}
+
+.whatsapp-green-box {
+  width: 60px;
+  height: 100%;
+  background-color: #29b200;
+  float: left;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.whatsapp-logo {
+  width: 40px;
+  height: 100%;
+  vertical-align: middle;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.arrow-icon {
+  vertical-align: middle;
+  height: 25px;
+}
+
+.whatsapp-content {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  padding: 5px;
+}

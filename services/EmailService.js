@@ -17,13 +17,14 @@ export const sendMailCotizacionResultado = (datosCotizacion, callback) =>
             <div style="font-family:arial;font-size:12px;background-color:#eceff4;text-align:center;padding:20px">
                 <div style="width:600px;background-color:#FFF;margin-left:auto;margin-right:auto;text-align:left;padding:20px;word-wrap:break-word;">
                     <a href="https://pianesichiramberro.com.ar">
-                    <img src="https://pianesichiramberro.com.ar/img/logo-colored.png" width="200" height="45">
+                    <img src="https://main.d27pki0861cd4o.amplifyapp.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.1589df2d.png&w=1200&q=75" width="200" height="45">
                     </a>
                     <br><br>
                     Nueva cotización desde la web. El usuario solicita que se lo contacte.
                     
                     <div style="margin-top:15px"><b>Nombre:</b> {nombre}<br></div>
-                    <div style="margin-top:15px"><b>Email o Teléfono:</b> {email}<br></div>
+                    <div style="margin-top:15px"><b>Ciudad:</b> {city}<br></div>
+                    <div style="margin-top:15px"><b>Teléfono:</b> {email}<br></div>
                     <div style="margin-top:15px"><b>Vehículo cotizado:</b> {vehicle}<br></div>
                     <div style="margin-top:15px"><b>Suma Asegurada:</b> {price}<br></div>
                     <div style="margin-top:15px"><b>Es 0km:</b> {0km} <b>GNC:</b> {gas}<br></div>

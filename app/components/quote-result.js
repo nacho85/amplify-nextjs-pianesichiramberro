@@ -1,12 +1,13 @@
 import styles from "./quote-result.module.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   vehicleWebResultCoverages,
   vehicleWebResultCoverageTags,
 } from "../../services/LocalSettings";
-import { Box, Modal, TextField } from "@mui/material";
-import imgZurich from "../../images/zurich-web.png";
+import { Box, Modal } from "@mui/material";
+import imgWp from "../../images/wp.png";
 import imgInfo from "../../images/info.png";
+import imgArrowRight from "../../images/arrow-right.png";
 import Image from "next/image";
 import Link from "next/link";
 import Carousel from "react-material-ui-carousel";
@@ -307,19 +308,22 @@ const QuoteResult = ({ data }) => {
           href={
             "//wa.me/5492284662477?text=Hola!%20Quiero%20conocer%20m%C3%A1s%20acerca%20del%20seguro%20para%20mi%20auto."
           }
-          className="whatsapp-link"
+          className={styles.whatsappLink}
           target="_blank"
           rel="noreferrer"
         >
-          <div className="whatsapp-box">
-            <div className="whatsapp-green-box">
-              {/*<img src={imgWp} className="whatsapp-logo" alt='Whatsapp'/>*/}
+          <div className={styles.whatsappBox}>
+            <div className={styles.whatsappGreenBox}>
+              <Image
+                src={imgWp}
+                className={styles.whatsappLogo}
+                alt="Whatsapp"
+              />
             </div>
-            <div className="whatsapp-content">
+            <div className={styles.whatsappContent}>
               <div>
                 ¿Tenés dudas? Consultanos por <b>Whatsapp</b>
               </div>
-              {/*<img src={imgArrowRight} className="arrow-icon" alt=''/>*/}
             </div>
           </div>
         </Link>
