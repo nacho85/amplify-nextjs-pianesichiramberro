@@ -72,12 +72,13 @@
   }
 }
 
-.info-cell {
+.info-text-cell {
   color: #323f7f;
   font-size: 0.7rem;
   padding: 0px;
   margin-bottom: 0px;
   text-align: center;
+  display: none;
   @media (max-width: 768px) {
     display: block;
   }
@@ -89,6 +90,7 @@
   padding: 0px;
   margin-bottom: 0px;
   text-align: center;
+  display: block;
   @media (max-width: 768px) {
     display: none;
   }
