@@ -72,17 +72,6 @@
   }
 }
 
-.info-label {
-  color: #323f7f;
-  font-size: 0.7rem;
-  padding: 0px;
-  margin-bottom: 0px;
-  text-align: center;
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
 .info-label-cell {
   color: #323f7f;
   font-size: 0.7rem;
@@ -90,6 +79,17 @@
   margin-bottom: 0px;
   text-align: center;
   @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.info-label {
+  color: #323f7f;
+  font-size: 0.7rem;
+  padding: 0px;
+  margin-bottom: 0px;
+  text-align: center;
+  @media (max-width: 768px) {
     display: none;
   }
 }
