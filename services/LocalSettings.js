@@ -85,10 +85,10 @@ export const usage = [{ label: "Particular", value: 1 }];
 
 export const robberyContents = [
   {
-    label: "Robo Contenido $35000",
+    label: "Robo Contenido $200000",
     idCoverage: 258,
     idRobberyContent: 5976,
-    value: 35000,
+    value: 20000,
   },
 ];
 
@@ -195,7 +195,7 @@ export const vehicleWebResultCoverageTags = [
   {
     id: 8,
     title: "Robo de Contenido",
-    description: "Aseguramos lo que tengas en tu auto hasta $35.000.",
+    description: "Aseguramos lo que tengas en tu auto hasta $200.000.",
   },
   {
     id: 9,
