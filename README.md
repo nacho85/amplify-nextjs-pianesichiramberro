@@ -1,3 +1,6 @@
+¡¡¡¡NO ES EL REPO DE PRODUCCIÓN!!!!
+Este es el repo que usa la nueva versión de amplify.
+
 ## AWS Amplify + Next.js starter
 
 This is a starter application for building fullstack apps with AWS Amplify. 
